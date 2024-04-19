@@ -1,6 +1,6 @@
 from srv.view import View
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__, template_folder="template")
 
@@ -17,10 +17,12 @@ def auth():
         senha = request.form["senha"]
         if id := view.auth_validation(usuario, senha):
             return redirect(url_for("client", id=id))
+        else:
+            return render_template("index.html", erro="Usuário ou senha inválidos")
 
 
 @app.route("/client/<int:id>")
-def outra_rota(id):
+def client(id):
     return render_template("pag2Cliente.html")
 
 

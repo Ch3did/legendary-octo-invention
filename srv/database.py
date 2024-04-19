@@ -3,8 +3,8 @@ import sqlite3
 
 class LambeijosDB:
     def __init__(self):
-        self.db_name = "tmp/lambeijos.db"
-        self.connection = sqlite3.connect(self.db_name)
+        self.db_name = "./tmp/lambeijos.db"
+        self.connection = sqlite3.connect(self.db_name, check_same_thread=False)
         self.cursor = self.connection.cursor()
 
     def close(self):
@@ -43,6 +43,7 @@ class LambeijosDB:
             """INSERT INTO Usuarios (email, usuario, senha, numero_contato) VALUES (?, ?, ?, ?)""",
             (email, usuario, senha, numero_contato),
         )
+        self.connection.commit()
 
     def escrever_dados_cliente(
         self, nome, raca, idade, comportamento, sobre, usuario_id
@@ -52,6 +53,7 @@ class LambeijosDB:
             """INSERT INTO Cliente (nome, raca, idade, comportamento, sobre, usuario_id) VALUES (?, ?, ?, ?, ?, ?)""",
             (nome, raca, idade, comportamento, sobre, usuario_id),
         )
+        self.connection.commit()
 
     def user_exists(self, user):
         self.cursor = self.connection.cursor()
@@ -59,11 +61,12 @@ class LambeijosDB:
             """
             SELECT id FROM Usuarios WHERE usuario = (?)
             """,
-            (user),
+            (user,)
         )
         user = self.cursor.fetchone()
+        print(f"user: {user}")
 
-        return user if user else False
+        return user[0] if user else False
 
     def validate_password(self, id):
         self.cursor = self.connection.cursor()
@@ -71,16 +74,17 @@ class LambeijosDB:
             """
             SELECT senha FROM Usuarios WHERE id = (?)
             """,
-            (id),
+            (id,)
         )
         senha = self.cursor.fetchone()
 
-        return senha if senha else False
+        return senha[0] if senha else False
 
 
-if __name__ == "__main__":
-    x = LambeijosDB()
-    x.create_table()
-    x.escrever_dados_usuario('teste2@teste.com', 'teste2', 1234, 19999999998)
-    x.escrever_dados_cliente('Macondo', 'Shiba inu', 4, 'Manso', 'Tem muita energia', 1)
-    
+
+
+x = LambeijosDB()
+x.create_table()
+x.escrever_dados_usuario('teste2@teste.com', 'teste2', 1234, 19999999998)
+x.escrever_dados_cliente('Macondo', 'Shiba inu', 4, 'Manso', 'Tem muita energia', 1)
+x.connection.commit()
