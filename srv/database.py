@@ -35,6 +35,16 @@ class LambeijosDB:
                     FOREIGN KEY (usuario_id) REFERENCES Usuarios(id)
                      );"""
         )
+        
+    def select_client_from_id(self, id):
+        # Executar uma instrução SQL para inserir dados na tabela
+        self.cursor = self.connection.cursor()
+        self.cursor.execute(
+            """select * from cliente where usuario_id == (?) """,
+            (id),
+        )
+        data = self.cursor.fetchall()
+        return data
 
     def escrever_dados_usuario(self, email, usuario, senha, numero_contato):
         # Executar uma instrução SQL para inserir dados na tabela
@@ -84,7 +94,9 @@ class LambeijosDB:
 
 
 x = LambeijosDB()
-x.create_table()
-x.escrever_dados_usuario('teste2@teste.com', 'teste2', 1234, 19999999998)
-x.escrever_dados_cliente('Macondo', 'Shiba inu', 4, 'Manso', 'Tem muita energia', 1)
-x.connection.commit()
+# x.create_table()
+# x.escrever_dados_usuario('teste2@teste.com', 'teste2', 1234, 19999999998)
+# x.escrever_dados_cliente('Macondo', 'Shiba inu', 4, 'Manso', 'Tem muita energia', 1)
+# x.connection.commit()
+from pprint import pprint
+pprint(x.select_client_from_id("1"))

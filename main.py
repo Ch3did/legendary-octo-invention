@@ -1,4 +1,5 @@
 from srv.view import View
+from srv.database import LambeijosDB
 
 from flask import Flask, render_template, request, redirect, url_for
 
@@ -15,7 +16,8 @@ def auth():
     if request.method == "POST":
         usuario = request.form["usuario"]
         senha = request.form["senha"]
-        if id := view.auth_validation(usuario, senha):
+        id  = view.auth_validation(usuario, senha)
+        if id:
             return redirect(url_for("client", id=id))
         else:
             return render_template("index.html", erro="Usuário ou senha inválidos")
@@ -23,6 +25,7 @@ def auth():
 
 @app.route("/client/<int:id>")
 def client(id):
+    view.get_all_cliente_from_id(id)
     return render_template("pag2Cliente.html")
 
 
